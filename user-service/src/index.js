@@ -18,7 +18,6 @@ connectMongo();
 app.post('/users', async (req, res) => {
   const { channel } = await connectRabbitMQ();
   const user = await User.create(req.body);
-
   await channel.sendToQueue('user_created', Buffer.from(JSON.stringify(user)));
 
   try {
