@@ -10,6 +10,7 @@ module.exports = function connectMongo() {
     console.log('[User Service] MongoDB connected');
   });
 
+  
   mongoose.connection.on('error', (err) => {
     console.error('[User Service] MongoDB error:', err);
   });
