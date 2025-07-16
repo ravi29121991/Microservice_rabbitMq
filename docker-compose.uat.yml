@@ -28,6 +28,8 @@ services:
 
   wallet-service:
     image: joshiravi1991/microservice_rabbitmq:wallet-service-uat
+    ports:
+      - "3002:3002"
     depends_on:
       - rabbitmq
       - mongodb-wallet
