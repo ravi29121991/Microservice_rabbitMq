@@ -26,7 +26,7 @@ jobs:
     # Login to Docker Hub
     # ----------------------
     - name: Login to DockerHub
-      run: echo "${{ env.DOCKERHUB_PASSWORD }}" | docker login -u "${{ env.DOCKERHUB_USERNAME }}" --password-stdin
+      run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
     # ----------------------
     # Build and Push Images
