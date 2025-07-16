@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "3001:3001"
+    depends_on:
+      - rabbitmq
+      - mongo-user
+    environment:
+      MONGO_URI: mongodb://mongo-user:27017/userdb
+      RABBITMQ_URL: amqp://rabbitmq
+
+  product-service:
+    build: ./product-service
+    ports:
+      - "3002:3002"
+    depends_on:
+      - rabbitmq
+      - mongo-product
+    environment:
+      MONGO_URI: mongodb://mongo-product:27017/productdb
+      RABBITMQ_URL: amqp://rabbitmq
+
+  wallet-service:
+    build: ./wallet-service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - rabbitmq
+      - mongo-wallet
+    environment:
+      MONGO_URI: mongodb://mongo-wallet:27017/walletdb
+      RABBITMQ_URL: amqp://rabbitmq
+
+  mongo-user:
+    image: mongo
+    ports:
+      - "27018:27017"
+
+  mongo-product:
+    image: mongo
+    ports:
+      - "27019:27017"
+
+  mongo-wallet:
+    image: mongo
+    ports:
+      - "27020:27017"

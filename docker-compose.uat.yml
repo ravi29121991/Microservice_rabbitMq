@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  mongodb-user:
+    image: mongo
+    ports: [ "27017:27017" ]
+
+  mongodb-wallet:
+    image: mongo
+    ports: [ "27018:27017" ]
+
+  mongodb-product:
+    image: mongo
+    ports: [ "27019:27017" ]
+
+  user-service:
+    build: ./user-service
+    restart: always
+    ports:
+      - "3001:3001"
+    depends_on:
+      - rabbitmq
+      - mongodb-user
+    environment:
+      RABBITMQ_URL: amqp://rabbitmq
+
+  wallet-service:
+    build: ./wallet-service
+    restart: always
+    ports:
+      - "3002:3002"
+    depends_on:
+      - rabbitmq
+      - mongodb-wallet
+    environment:
+      RABBITMQ_URL: amqp://rabbitmq
+
+  product-service:
+    build: ./product-service
+    restart: always
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb-product
