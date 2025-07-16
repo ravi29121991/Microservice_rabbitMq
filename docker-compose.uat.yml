@@ -6,15 +6,19 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    hostname: rabbitmq
 
   mongodb-user:
     image: mongo
+    container_name: mongodb-user
 
   mongodb-wallet:
     image: mongo
+    container_name: mongodb-wallet
 
   mongodb-product:
     image: mongo
+    container_name: mongodb-product
 
   user-service:
     image: joshiravi1991/microservice_rabbitmq:user-service-uat
@@ -25,6 +29,7 @@ services:
       - mongodb-user
     environment:
       RABBITMQ_URL: amqp://rabbitmq
+      MONGO_URL: mongodb://mongodb-user:27017/users
 
   wallet-service:
     image: joshiravi1991/microservice_rabbitmq:wallet-service-uat
@@ -35,8 +40,13 @@ services:
       - mongodb-wallet
     environment:
       RABBITMQ_URL: amqp://rabbitmq
+      MONGO_URL: mongodb://mongodb-wallet:27017/wallets
 
   product-service:
     image: joshiravi1991/microservice_rabbitmq:product-service-uat
+    ports:
+      - "3003:3003"
     depends_on:
       - mongodb-product
+    environment:
+      MONGO_URL: mongodb://mongodb-product:27017/products
