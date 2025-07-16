@@ -41,6 +41,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Debug: List files in repo
+        run: |
+          echo "Listing root files..."
+          ls -lah
+          echo "Listing deploy folder..."
+          ls -lah deploy
+
       - name: Copy Docker Compose & Setup Script to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -49,20 +56,10 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
           source: |
-            docker-compose.uat.yml
-            deploy/ec2-setup.sh
+            ./docker-compose.uat.yml
+            ./deploy/ec2-setup.sh
           target: "/home/ec2-user/"
-
-      - name: Check if files transferred successfully
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_KEY }}
-          port: ${{ secrets.EC2_PORT }}
-          script: |
-            echo "Listing files in /home/ec2-user"
-            ls -la /home/ec2-user
+          strip_components: 1
 
       - name: Deploy with Docker Compose on EC2
         uses: appleboy/ssh-action@v1.0.0
