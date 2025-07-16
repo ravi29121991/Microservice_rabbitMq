@@ -13,7 +13,6 @@ app.use('/health', healthRouter);
 // Axios with retry
 axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
-
 connectMongo();
 
 app.post('/users', async (req, res) => {
