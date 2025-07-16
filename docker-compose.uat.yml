@@ -18,6 +18,8 @@ services:
 
   user-service:
     image: joshiravi1991/microservice_rabbitmq:user-service-uat
+     ports:
+      - "3001:3001"
     depends_on:
       - rabbitmq
       - mongodb-user
