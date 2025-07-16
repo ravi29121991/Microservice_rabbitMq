@@ -28,7 +28,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE=joshiravi1991/microservice_rabbitmq:${{ matrix.service }}-uat
+          IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ matrix.service }}:uat
           docker build -t $IMAGE ./${{ matrix.service }}
           docker push $IMAGE
 
@@ -48,9 +48,21 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_PORT }}
-          source: "docker-compose.uat.yml,deploy/ec2-setup.sh"
+          source: |
+            docker-compose.uat.yml
+            deploy/ec2-setup.sh
           target: "/home/ec2-user/"
-          strip_components: 1
+
+      - name: Check if files transferred successfully
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          port: ${{ secrets.EC2_PORT }}
+          script: |
+            echo "Listing files in /home/ec2-user"
+            ls -la /home/ec2-user
 
       - name: Deploy with Docker Compose on EC2
         uses: appleboy/ssh-action@v1.0.0
